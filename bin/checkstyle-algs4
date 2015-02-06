@@ -11,11 +11,11 @@
 CHECKSTYLE=checkstyle-?.?
 
 # This must match the install directory
-INSTALL=~/algs4
+INSTALL=../
 
 # Sets the paths to arrays of matching checkstyle jar and xml files
-jar=(${INSTALL}/${CHECKSTYLE}/${CHECKSTYLE}-all.jar)
-xml=(${INSTALL}/${CHECKSTYLE}/checkstyle.xml)
+jar=(${INSTALL}opt/${CHECKSTYLE}/${CHECKSTYLE}-all.jar)
+xml=(${INSTALL}opt/${CHECKSTYLE}/checkstyle.xml)
 
 # Extracts the latest version of each file from the array
 jar=${jar[${#jar[@]}-1]}

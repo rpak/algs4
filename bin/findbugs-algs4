@@ -11,18 +11,18 @@
 FINDBUGS=findbugs-?.?.?
 
 # This must match the specified install directory
-INSTALL=~/algs4
+INSTALL=../
 
 # Sets the paths to arrays of matching checkstyle jar and xml files
-jar=(${INSTALL}/${FINDBUGS}/lib/findbugs.jar)
-xml=(${INSTALL}/${FINDBUGS}/findbugs.xml)
+jar=(${INSTALL}opt/${FINDBUGS}/lib/findbugs.jar)
+xml=(${INSTALL}opt/${FINDBUGS}/findbugs.xml)
 
 # Extracts the latest version of each file from the array
 jar=${jar[${#jar[@]}-1]}
 xml=${xml[${#xml[@]}-1]}
 
 # Sets the path to the auxiliary libraries
-aux=(${INSTALL}/stdlib.jar:${INSTALL}/algs4.jar)
+aux=(${INSTALL}lib/stdlib.jar:${INSTALL}lib/algs4.jar)
 
 # If there are no arguments
 if [ ! -n "$1" ]; then
