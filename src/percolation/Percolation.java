@@ -13,10 +13,10 @@ public class Percolation {
         this.siteCount = n * n;
         this.sites = new int[n][n];
 
-        this.connectedSites = new WeightedQuickUnionUF(this.siteCount);
+        this.connectedSites = new WeightedQuickUnionUF(this.siteCount + 2);
 
-        this.virtualTopSiteId = n + 1;
-        this.virtualBottomSiteId = n + 2;
+        this.virtualTopSiteId = this.siteCount;
+        this.virtualBottomSiteId = this.siteCount + 1;
 
         for (int i = 0; i < n; i++) {
             this.connectedSites.union(virtualTopSiteId, i);
