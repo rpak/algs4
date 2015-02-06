@@ -1,6 +1,6 @@
 public class PercolationStats {
     public PercolationStats(int n, int t) {
-
+        if (n <= 0 || t <=0) throw new IllegalArgumentException();
     }
 
     public double mean() {
@@ -20,6 +20,6 @@ public class PercolationStats {
     }
 
     public static void main(String[] args) {
-        
+
     }
 }
