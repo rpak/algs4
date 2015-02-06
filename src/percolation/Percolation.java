@@ -2,7 +2,7 @@ public class Percolation {
     public static int BLOCKED = 0;
     public static int OPEN = 1;
     private int n;
-    private int siteCount;
+    private int totalSiteCount;
     private int[][] sites;
     private WeightedQuickUnionUF connectedSites;
     int virtualTopSiteId;
@@ -12,21 +12,19 @@ public class Percolation {
     public Percolation(int n) {
         if (n <= 0) throw new IllegalArgumentException();
         this.n = n;
-        this.siteCount = n * n;
+        this.totalSiteCount = n * n;
         this.sites = new int[n][n];
-        this.connectedSites = new WeightedQuickUnionUF(this.siteCount + 2);
-        this.virtualTopSiteId = this.siteCount;
-        this.virtualBottomSiteId = this.siteCount + 1;
+        this.connectedSites = new WeightedQuickUnionUF(this.totalSiteCount + 2);
+        this.virtualTopSiteId = this.totalSiteCount;
+        this.virtualBottomSiteId = this.totalSiteCount + 1;
 
         for (int i = 0; i < n; i++) {
             this.connectedSites.union(virtualTopSiteId, i);
-            this.connectedSites.union(virtualBottomSiteId, (this.siteCount - 1 - i));
+            this.connectedSites.union(virtualBottomSiteId, (this.totalSiteCount - 1 - i));
             for (int j = 0; j < n; j++) {
                 this.sites[i][j] = BLOCKED;
             }
         }
-
-        System.out.println("Initialized " + (this.siteCount) + " sites.");
     }
 
     // open site (row i, column j) if it is not open already
@@ -126,5 +124,28 @@ public class Percolation {
 
     private int buildSiteId(int rowIndex, int columnIndex) {
         return (rowIndex * this.n) + columnIndex;
+    }
+
+    public int getTotalSiteCount() {
+        return this.totalSiteCount;
+    }
+
+    public String toString() {
+        StringBuilder buffer = new StringBuilder();
+
+        for (int i = 0; i < this.n; i++) {
+            for (int j = 0; j < this.n; j++) {
+                buffer.append('|');
+
+                if (this.sites[i][j] == OPEN)
+                    buffer.append('o');
+                else
+                    buffer.append(' ');
+
+                if (j == this.n - 1) buffer.append("|\n");
+            }
+        }
+
+        return buffer.toString();
     }
 }
