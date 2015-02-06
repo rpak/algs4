@@ -1,3 +1,5 @@
+import sun.reflect.annotation.ExceptionProxy;
+
 public class PercolationStats {
     private double[] results;
     private int n;
@@ -45,6 +47,16 @@ public class PercolationStats {
     }
 
     public static void main(String[] args) {
-
+        try {
+            int n = Integer.parseInt(args[0]);
+            int t = Integer.parseInt(args[1]);
+            PercolationStats stats = new PercolationStats(n, t);
+            System.out.println("mean                    = " + stats.mean());
+            System.out.println("stddev                  = " + stats.stddev());
+            System.out.println("95% confidence interval = " + stats.confidenceLo() + ", " + stats.confidenceHi());
+        }
+        catch (Exception e) {
+            System.out.println("Usage: PercolationStats N T");
+        }
     }
 }
