@@ -1,4 +1,6 @@
 public class Percolation {
+    public static int BLOCKED = 0;
+    public static int OPEN = 1;
     private int n;
     private int siteCount;
     private int[][] sites;
@@ -12,9 +14,7 @@ public class Percolation {
         this.n = n;
         this.siteCount = n * n;
         this.sites = new int[n][n];
-
         this.connectedSites = new WeightedQuickUnionUF(this.siteCount + 2);
-
         this.virtualTopSiteId = this.siteCount;
         this.virtualBottomSiteId = this.siteCount + 1;
 
@@ -22,7 +22,7 @@ public class Percolation {
             this.connectedSites.union(virtualTopSiteId, i);
             this.connectedSites.union(virtualBottomSiteId, (this.siteCount - 1 - i));
             for (int j = 0; j < n; j++) {
-                this.sites[i][j] = 0;
+                this.sites[i][j] = BLOCKED;
             }
         }
 
@@ -37,7 +37,7 @@ public class Percolation {
         int siteId = buildSiteId(rowIndex, columnIndex);
 
         int topRowIndex = rowIndex - 1;
-        if (topRowIndex >= 0 && this.sites[topRowIndex][columnIndex] == 1) {
+        if (topRowIndex >= 0 && this.sites[topRowIndex][columnIndex] == OPEN) {
             int topSiteId = buildSiteId(topRowIndex, columnIndex);
             if (!connectedSites.connected(siteId, topSiteId)) {
                 connectedSites.union(siteId, topSiteId);
@@ -45,15 +45,11 @@ public class Percolation {
 
             if (isFull(i - 1, j)) {
                 this.connectedSites.union(this.virtualTopSiteId, siteId);
-
-                if (i == n) {
-                    this.connectedSites.union(this.virtualBottomSiteId, this.virtualBottomSiteId);
-                }
             }
         }
 
         int bottomRowIndex = rowIndex + 1;
-        if (bottomRowIndex < n && this.sites[bottomRowIndex][columnIndex] == 1) {
+        if (bottomRowIndex < n && this.sites[bottomRowIndex][columnIndex] == OPEN) {
             int bottomSiteId = buildSiteId(bottomRowIndex, columnIndex);
             if (!connectedSites.connected(siteId, bottomSiteId)) {
                 connectedSites.union(siteId, bottomSiteId);
@@ -65,7 +61,7 @@ public class Percolation {
         }
 
         int leftColumnIndex = columnIndex - 1;
-        if (leftColumnIndex >= 0 && this.sites[rowIndex][leftColumnIndex] == 1) {
+        if (leftColumnIndex >= 0 && this.sites[rowIndex][leftColumnIndex] == OPEN) {
             int leftSiteId = buildSiteId(rowIndex, leftColumnIndex);
             if (!connectedSites.connected(siteId, leftSiteId)) {
                 connectedSites.union(siteId, leftSiteId);
@@ -77,7 +73,7 @@ public class Percolation {
         }
 
         int rightColumnIndex = columnIndex + 1;
-        if (rightColumnIndex < n && this.sites[rowIndex][rightColumnIndex] == 1) {
+        if (rightColumnIndex < n && this.sites[rowIndex][rightColumnIndex] == OPEN) {
             int rightSiteId = buildSiteId(rowIndex, rightColumnIndex);
             if (!connectedSites.connected(siteId, rightSiteId)) {
                 connectedSites.union(siteId, rightSiteId);
@@ -88,13 +84,13 @@ public class Percolation {
             }
         }
 
-        this.sites[rowIndex][columnIndex] = 1;
+        this.sites[rowIndex][columnIndex] = OPEN;
     }
 
     // is site (row i, column j) open?
     public boolean isOpen(int i, int j) throws IndexOutOfBoundsException {
         validateBounds(i, j);
-        return this.sites[i - 1][j - 1] == 1;
+        return this.sites[i - 1][j - 1] == OPEN;
     }
 
     /**
@@ -107,12 +103,7 @@ public class Percolation {
         int columnIndex = j - 1;
         int siteId = buildSiteId(rowIndex, columnIndex);
 
-        if (isOpen(i, j) && this.connectedSites.connected(siteId, virtualTopSiteId)) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return isOpen(i, j) && this.connectedSites.connected(siteId, virtualTopSiteId);
     }
 
     /**

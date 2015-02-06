@@ -59,7 +59,8 @@ public class PercolationTest {
     @Test
     public void testIsNotFull() {
         Percolation subject = new Percolation(4);
-        assertFalse(subject.isFull(1, 2));
+        subject.open(1, 2);
+        assertFalse(subject.isFull(1, 3));
         assertFalse(subject.isFull(4, 4));
     }
 
