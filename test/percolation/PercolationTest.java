@@ -1,12 +1,9 @@
+import junit.framework.Assert;
+import junit.framework.TestCase;
 import org.junit.Test;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.StringReader;
-
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class PercolationTest {
@@ -66,8 +63,8 @@ public class PercolationTest {
     public void testIsNotFull() {
         Percolation subject = new Percolation(4);
         subject.open(1, 2);
-        assertFalse(subject.isFull(1, 3));
-        assertFalse(subject.isFull(4, 4));
+        TestCase.assertFalse(subject.isFull(1, 3));
+        TestCase.assertFalse(subject.isFull(4, 4));
     }
 
     @Test
@@ -90,7 +87,7 @@ public class PercolationTest {
         subject.open(2, 2);
         subject.open(3, 2);
         subject.open(4, 1);
-        assertFalse(subject.percolates());
+        TestCase.assertFalse(subject.percolates());
     }
 
     @Test
@@ -132,7 +129,7 @@ public class PercolationTest {
             }
             System.out.println(PercolationUtils.print(percolation, n));
             boolean expected = Boolean.parseBoolean(fixtures[i][1].toString());
-            assertEquals("Fixture, " + fixtures[i][0], expected, percolation.percolates());
+            Assert.assertEquals("Fixture, " + fixtures[i][0], expected, percolation.percolates());
             reader.close();
         }
     }
