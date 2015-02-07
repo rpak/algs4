@@ -1,5 +1,3 @@
-import sun.reflect.annotation.ExceptionProxy;
-
 public class PercolationStats {
     private double[] results;
     private int n;

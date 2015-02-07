@@ -1,13 +1,13 @@
 public class Percolation {
-    public static int BLOCKED = 0;
-    public static int OPEN = 1;
-    private enum Neighbors { TOP, RIGHT, BOTTOM, LEFT };
+    private static final int BLOCKED = 0;
+    private static final int OPEN = 1;
+    private enum Neighbors { TOP, RIGHT, BOTTOM, LEFT }
     private int n;
     private int totalSiteCount;
     private int[][] sites;
     private WeightedQuickUnionUF connectedSites;
-    int virtualTopSiteId;
-    int virtualBottomSiteId;
+    private int virtualTopSiteId;
+    private int virtualBottomSiteId;
 
     // create N-by-N sites, with all sites blocked
     public Percolation(int n) {
