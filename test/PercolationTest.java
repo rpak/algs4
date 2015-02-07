@@ -130,7 +130,7 @@ public class PercolationTest {
                 int y = Integer.parseInt(coordinates[1]);
                 percolation.open(x, y);
             }
-            System.out.println(percolation.toString());
+            System.out.println(PercolationUtils.print(percolation, n));
             boolean expected = Boolean.parseBoolean(fixtures[i][1].toString());
             assertEquals("Fixture, " + fixtures[i][0], expected, percolation.percolates());
             reader.close();

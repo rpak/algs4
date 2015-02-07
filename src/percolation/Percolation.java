@@ -29,43 +29,42 @@ public class Percolation {
     }
 
     // open site (row i, column j) if it is not open already
-    public void open(int i, int j) throws IndexOutOfBoundsException {
-        validateBounds(i, j);
+    public void open(int i, int j) {
+        if (i > this.sites.length || j > this.sites.length) throw new IndexOutOfBoundsException();
+        if (i <= 0 || j <= 0) throw new IndexOutOfBoundsException();
         int rowIndex = i - 1;
         int columnIndex = j - 1;
-        int siteId = buildSiteId(rowIndex, columnIndex);
+        int siteId = (rowIndex * this.n) + columnIndex;
 
         for (Neighbors neighbor: Neighbors.values()) {
-            connectWithOpenNeighbors(neighbor, siteId, rowIndex, columnIndex);
+            int neighborRowIndex = rowIndex;
+            int neighborColumnIndex = columnIndex;
+            if (neighbor == Neighbors.TOP) neighborRowIndex--;
+            if (neighbor == Neighbors.RIGHT) neighborColumnIndex++;
+            if (neighbor == Neighbors.BOTTOM) neighborRowIndex++;
+            if (neighbor == Neighbors.LEFT) neighborColumnIndex--;
+            if (neighborRowIndex < 0 || neighborRowIndex >= this.n || neighborColumnIndex < 0 || neighborColumnIndex >= this.n) continue;
+
+            if (this.sites[neighborRowIndex][neighborColumnIndex] == OPEN) {
+                int neighborSiteId = (neighborRowIndex * this.n) + neighborColumnIndex;
+                if (!connectedSites.connected(siteId, neighborSiteId)) {
+                    connectedSites.union(siteId, neighborSiteId);
+                }
+
+                if (isFull(neighborRowIndex + 1, neighborColumnIndex + 1)) {
+                    this.connectedSites.union(this.virtualTopSiteId, siteId);
+                }
+            }
         }
 
         this.sites[rowIndex][columnIndex] = OPEN;
     }
 
-    private void connectWithOpenNeighbors(Neighbors neighbor, int siteId, int rowIndex, int columnIndex) {
-        int neighborRowIndex = rowIndex;
-        int neighborColumnIndex = columnIndex;
-        if (neighbor == Neighbors.TOP) neighborRowIndex--;
-        if (neighbor == Neighbors.RIGHT) neighborColumnIndex++;
-        if (neighbor == Neighbors.BOTTOM) neighborRowIndex++;
-        if (neighbor == Neighbors.LEFT) neighborColumnIndex--;
-        if (neighborRowIndex < 0 || neighborRowIndex >= this.n || neighborColumnIndex < 0 || neighborColumnIndex >= this.n) return;
-
-        if (this.sites[neighborRowIndex][neighborColumnIndex] == OPEN) {
-            int neighborSiteId = buildSiteId(neighborRowIndex, neighborColumnIndex);
-            if (!connectedSites.connected(siteId, neighborSiteId)) {
-                connectedSites.union(siteId, neighborSiteId);
-            }
-
-            if (isFull(neighborRowIndex + 1, neighborColumnIndex + 1)) {
-                this.connectedSites.union(this.virtualTopSiteId, siteId);
-            }
-        }
-    }
-
     // is site (row i, column j) open?
-    public boolean isOpen(int i, int j) throws IndexOutOfBoundsException {
-        validateBounds(i, j);
+    public boolean isOpen(int i, int j) {
+        if (i > this.sites.length || j > this.sites.length) throw new IndexOutOfBoundsException();
+        if (i <= 0 || j <= 0) throw new IndexOutOfBoundsException();
+
         return this.sites[i - 1][j - 1] == OPEN;
     }
 
@@ -73,11 +72,12 @@ public class Percolation {
      * A full site is an open site that can be connected to an open site in the top row via a chain of neighboring
      * (left, right, up, down) open sites.
      */
-    public boolean isFull(int i, int j) throws IndexOutOfBoundsException {
-        validateBounds(i, j);
+    public boolean isFull(int i, int j) {
+        if (i > this.sites.length || j > this.sites.length) throw new IndexOutOfBoundsException();
+        if (i <= 0 || j <= 0) throw new IndexOutOfBoundsException();
         int rowIndex = i - 1;
         int columnIndex = j - 1;
-        int siteId = buildSiteId(rowIndex, columnIndex);
+        int siteId = (rowIndex * this.n) + columnIndex;
 
         return isOpen(i, j) && this.connectedSites.connected(siteId, virtualTopSiteId);
     }
@@ -90,42 +90,5 @@ public class Percolation {
         if (this.totalSiteCount == 1)
             return isFull(1, 1);
         return this.connectedSites.connected(virtualBottomSiteId, virtualTopSiteId);
-    }
-
-    public static void main(String[] args) {
-        System.out.println("Programming Assignment 1: Percolation");
-    }
-
-    private void validateBounds(int i, int j) throws IndexOutOfBoundsException {
-        String message = "Coordinates, [" + i + "][" + j + "], out of bounds for N-by-N sites of " + this.sites.length;
-        if (i > this.sites.length || j > this.sites.length) throw new IndexOutOfBoundsException(message);
-        if (i <= 0 || j <= 0) throw new IndexOutOfBoundsException(message);
-    }
-
-    private int buildSiteId(int rowIndex, int columnIndex) {
-        return (rowIndex * this.n) + columnIndex;
-    }
-
-    public int getTotalSiteCount() {
-        return this.totalSiteCount;
-    }
-
-    public String toString() {
-        StringBuilder buffer = new StringBuilder();
-
-        for (int i = 0; i < this.n; i++) {
-            for (int j = 0; j < this.n; j++) {
-                buffer.append('|');
-
-                if (this.sites[i][j] == OPEN)
-                    buffer.append('o');
-                else
-                    buffer.append(' ');
-
-                if (j == this.n - 1) buffer.append("|\n");
-            }
-        }
-
-        return buffer.toString();
     }
 }
