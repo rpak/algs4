@@ -1,6 +1,7 @@
 public class Percolation {
     public static int BLOCKED = 0;
     public static int OPEN = 1;
+    private enum Neighbors { TOP, RIGHT, BOTTOM, LEFT };
     private int n;
     private int totalSiteCount;
     private int[][] sites;
@@ -34,55 +35,32 @@ public class Percolation {
         int columnIndex = j - 1;
         int siteId = buildSiteId(rowIndex, columnIndex);
 
-        int topRowIndex = rowIndex - 1;
-        if (topRowIndex >= 0 && this.sites[topRowIndex][columnIndex] == OPEN) {
-            int topSiteId = buildSiteId(topRowIndex, columnIndex);
-            if (!connectedSites.connected(siteId, topSiteId)) {
-                connectedSites.union(siteId, topSiteId);
-            }
-
-            if (isFull(i - 1, j)) {
-                this.connectedSites.union(this.virtualTopSiteId, siteId);
-            }
-        }
-
-        int bottomRowIndex = rowIndex + 1;
-        if (bottomRowIndex < n && this.sites[bottomRowIndex][columnIndex] == OPEN) {
-            int bottomSiteId = buildSiteId(bottomRowIndex, columnIndex);
-            if (!connectedSites.connected(siteId, bottomSiteId)) {
-                connectedSites.union(siteId, bottomSiteId);
-            }
-
-            if (isFull(i + 1, j)) {
-                this.connectedSites.union(this.virtualTopSiteId, siteId);
-            }
-        }
-
-        int leftColumnIndex = columnIndex - 1;
-        if (leftColumnIndex >= 0 && this.sites[rowIndex][leftColumnIndex] == OPEN) {
-            int leftSiteId = buildSiteId(rowIndex, leftColumnIndex);
-            if (!connectedSites.connected(siteId, leftSiteId)) {
-                connectedSites.union(siteId, leftSiteId);
-            }
-
-            if (isFull(i, j - 1)) {
-                this.connectedSites.union(this.virtualTopSiteId, siteId);
-            }
-        }
-
-        int rightColumnIndex = columnIndex + 1;
-        if (rightColumnIndex < n && this.sites[rowIndex][rightColumnIndex] == OPEN) {
-            int rightSiteId = buildSiteId(rowIndex, rightColumnIndex);
-            if (!connectedSites.connected(siteId, rightSiteId)) {
-                connectedSites.union(siteId, rightSiteId);
-            }
-
-            if (isFull(i, j + 1)) {
-                this.connectedSites.union(this.virtualTopSiteId, siteId);
-            }
+        for (Neighbors neighbor: Neighbors.values()) {
+            connectWithOpenNeighbors(neighbor, siteId, rowIndex, columnIndex);
         }
 
         this.sites[rowIndex][columnIndex] = OPEN;
+    }
+
+    private void connectWithOpenNeighbors(Neighbors neighbor, int siteId, int rowIndex, int columnIndex) {
+        int neighborRowIndex = rowIndex;
+        int neighborColumnIndex = columnIndex;
+        if (neighbor == Neighbors.TOP) neighborRowIndex--;
+        if (neighbor == Neighbors.RIGHT) neighborColumnIndex++;
+        if (neighbor == Neighbors.BOTTOM) neighborRowIndex++;
+        if (neighbor == Neighbors.LEFT) neighborColumnIndex--;
+        if (neighborRowIndex < 0 || neighborRowIndex >= this.n || neighborColumnIndex < 0 || neighborColumnIndex >= this.n) return;
+
+        if (this.sites[neighborRowIndex][neighborColumnIndex] == OPEN) {
+            int neighborSiteId = buildSiteId(neighborRowIndex, neighborColumnIndex);
+            if (!connectedSites.connected(siteId, neighborSiteId)) {
+                connectedSites.union(siteId, neighborSiteId);
+            }
+
+            if (isFull(neighborRowIndex + 1, neighborColumnIndex + 1)) {
+                this.connectedSites.union(this.virtualTopSiteId, siteId);
+            }
+        }
     }
 
     // is site (row i, column j) open?
