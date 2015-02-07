@@ -1,5 +1,11 @@
 import org.junit.Test;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.StringReader;
+
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -85,5 +91,48 @@ public class PercolationTest {
         subject.open(3, 2);
         subject.open(4, 1);
         assertFalse(subject.percolates());
+    }
+
+    @Test
+    public void testTestFixtures() throws IOException {
+        Object[][] fixtures = new Object[][] {
+                {"greeting57", false},
+                {"heart25", false},
+                {"input1", true},
+                {"input2", true},
+                {"input2-no", false},
+                {"input3", true},
+                {"input4", true},
+                {"input5", true},
+                {"input6", true},
+                {"input7", true},
+                {"input8", true},
+                {"input8-no", false},
+                {"input10", true},
+                {"input10-no", false},
+                {"input20", true},
+                {"input50", true},
+                {"jerry47", true},
+                {"sedgewick60", true},
+                {"wayne98", true}
+        };
+
+        for (int i = 0; i < fixtures.length; i++) {
+            String fixturePath = "test/percolation/" + fixtures[i][0].toString() + ".txt";
+            BufferedReader reader = new BufferedReader(new FileReader(fixturePath));
+            int n = Integer.parseInt(reader.readLine());
+            Percolation percolation = new Percolation(n);
+            while (reader.ready()) {
+                String[] coordinates = reader.readLine().trim().split("\\s+");
+                if (coordinates.length < 2) break;
+                int x = Integer.parseInt(coordinates[0]);
+                int y = Integer.parseInt(coordinates[1]);
+                percolation.open(x, y);
+            }
+            System.out.println(percolation.toString());
+            boolean expected = Boolean.parseBoolean(fixtures[i][1].toString());
+            assertEquals("Fixture, " + fixtures[i][0], expected, percolation.percolates());
+            reader.close();
+        }
     }
 }
