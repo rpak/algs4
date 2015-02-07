@@ -99,6 +99,7 @@ public class PercolationTest {
                 {"greeting57", false},
                 {"heart25", false},
                 {"input1", true},
+                {"input1-no", false},
                 {"input2", true},
                 {"input2-no", false},
                 {"input3", true},
@@ -124,7 +125,7 @@ public class PercolationTest {
             Percolation percolation = new Percolation(n);
             while (reader.ready()) {
                 String[] coordinates = reader.readLine().trim().split("\\s+");
-                if (coordinates.length < 2) break;
+                if (coordinates.length < 2) continue;
                 int x = Integer.parseInt(coordinates[0]);
                 int y = Integer.parseInt(coordinates[1]);
                 percolation.open(x, y);

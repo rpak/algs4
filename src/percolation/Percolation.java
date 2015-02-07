@@ -87,6 +87,8 @@ public class Percolation {
      * we fill all open sites connected to the top row and that process fills some open site on the bottom row.
      */
     public boolean percolates() {
+        if (this.totalSiteCount == 1)
+            return isFull(1, 1);
         return this.connectedSites.connected(virtualBottomSiteId, virtualTopSiteId);
     }
 
