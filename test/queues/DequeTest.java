@@ -1,3 +1,4 @@
+import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -5,6 +6,7 @@ import java.util.Iterator;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 public class DequeTest {
     private Deque<String> subject;
@@ -34,10 +36,11 @@ public class DequeTest {
         subject.addLast("C");
         subject.addFirst("A");
         subject.addLast("D");
-        assert(subject.iterator().next().equals("A"));
-        assert(subject.iterator().next().equals("B"));
-        assert(subject.iterator().next().equals("C"));
-        assert(subject.iterator().next().equals("D"));
+        Iterator<String> iterator = subject.iterator();
+        assertEquals("A", iterator.next());
+        assertEquals("B", iterator.next());
+        assertEquals("C", iterator.next());
+        assertEquals("D", iterator.next());
     }
 
     @Test
@@ -45,9 +48,10 @@ public class DequeTest {
         subject.addFirst("foo");
         subject.addFirst("bar");
         subject.addFirst("baz");
-        assert(subject.iterator().next().equals("foo"));
-        assert(subject.iterator().next().equals("bar"));
-        assert(subject.iterator().next().equals("baz"));
+        Iterator<String> iterator = subject.iterator();
+        assertEquals("baz", iterator.next());
+        assertEquals("bar", iterator.next());
+        assertEquals("foo", iterator.next());
     }
 
     @Test
@@ -55,19 +59,36 @@ public class DequeTest {
         subject.addLast("foo");
         subject.addLast("bar");
         subject.addLast("baz");
-        assert(subject.iterator().next().equals("foo"));
-        assert(subject.iterator().next().equals("bar"));
-        assert(subject.iterator().next().equals("baz"));
+        Iterator<String> iterator = subject.iterator();
+        assertEquals("foo", iterator.next());
+        assertEquals("bar", iterator.next());
+        assertEquals("baz", iterator.next());
     }
 
     @Test
     public void testRemoveFirst() {
-
+        subject.addFirst("A");
+        assertEquals("A", subject.removeFirst());
+        subject.addFirst("B");
+        subject.addFirst("C");
+        subject.addLast("D");
+        assertEquals("C", subject.removeFirst());
+        assertEquals("B", subject.removeFirst());
+        assertEquals("D", subject.removeFirst());
     }
 
     @Test
     public void testRemoveLast() {
-
+        subject.addLast("A");
+        subject.addLast("B");
+        subject.addLast("C");
+        subject.addFirst("D");
+        subject.addFirst("E");
+        assertEquals("C", subject.removeLast());
+        assertEquals("B", subject.removeLast());
+        assertEquals("A", subject.removeLast());
+        assertEquals("D", subject.removeLast());
+        assertEquals("E", subject.removeLast());
     }
 
     @Test
@@ -82,7 +103,7 @@ public class DequeTest {
             assertTrue(next.equals("foo") || next.equals("bar"));
             iterationCount++;
         }
-        assertTrue(iterationCount == subject.size());
+        assertEquals(iterationCount, subject.size());
     }
 
     @Test
