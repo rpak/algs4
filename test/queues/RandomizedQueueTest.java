@@ -26,4 +26,24 @@ public class RandomizedQueueTest {
         assertTrue(Arrays.asList(fixture).contains(iterator.next()));
         iterator.next();
     }
+
+    @Test(expected = NoSuchElementException.class)
+    public void testIterator() {
+        subject.enqueue("A");
+        Iterator<String> iterator = subject.iterator();
+        int iterationCount = 0;
+
+        while (iterator.hasNext()) {
+            assertEquals("A", iterator.next());
+            iterationCount++;
+        }
+        iterator.next();
+        assertEquals(iterationCount, subject.size());
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testIteratorRemove() {
+        Iterator<String> iterator = subject.iterator();
+        iterator.remove();
+    }
 }
