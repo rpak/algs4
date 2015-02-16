@@ -1,4 +1,3 @@
-import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -8,7 +7,6 @@ import java.util.NoSuchElementException;
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 public class DequeTest {
     private Deque<String> subject;
@@ -110,7 +108,6 @@ public class DequeTest {
             iterationCount++;
         }
         iterator.next();
-        try { iterator.remove(); fail("Expected UnsupportedOperationException"); } catch (UnsupportedOperationException e) {};
         assertEquals(iterationCount, subject.size());
     }
 
