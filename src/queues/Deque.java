@@ -2,93 +2,127 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class Deque<Item> implements Iterable<Item> {
-    private Queue<Item> queue;
-    private Stack<Item> stack;
+    private Node head;
+    private Node tail;
+    private int length;
 
-    // construct an empty deque
+    private class Node {
+        private Node prev = null;
+        private Node next = null;
+        private Item item;
+    }
+
     public Deque() {
-        this.queue = new Queue<Item>();
-        this.stack = new Stack<Item>();
+        this.head = null;
+        this.tail = null;
         this.length = 0;
     }
 
     // is the deque empty?
     public boolean isEmpty() {
-        return this.queue.size() == 0 && this.stack.size() == 0;
+        return size() == 0;
     }
 
-    // return the number of items on the deque
     public int size() {
-        return this.queue.size() + this.stack.size();
+        return this.length;
     }
 
-    // insert the item at the front
     public void addFirst(Item item) {
-        this.stack.push(item);
+        Node node = new Node();
+        node.item = item;
+
+        if (this.head != null) {
+            node.next = this.head;
+            this.head.prev = node;
+        }
+        if (this.tail == null) {
+            this.tail = node;
+        }
+
+        this.length++;
+        this.head = node;
     }
 
-    // insert the item at the end
     public void addLast(Item item) {
-        this.queue.enqueue(item);
+        Node node = new Node();
+        node.item = item;
+        if (this.tail != null) {
+            node.prev = this.tail;
+            this.tail.next = node;
+        }
+        if (this.head == null) {
+            this.head = node;
+        }
+        this.length++;
+        this.tail = node;
     }
 
     // delete and return the item at the front
     public Item removeFirst() {
-        if (this.stack.isEmpty() && this.queue.isEmpty()) {
-            throw new NoSuchElementException("Deque is empty.");
+        Node removedHead = this.head;
+
+        if (this.head.next == null) {
+            this.head = null;
+            this.tail = null;
         }
-        else if (this.stack.isEmpty()) {
-            this.stack.push(this.queue.dequeue());
+        else {
+            this.head = this.head.next;
+
+            if (this.tail.prev == removedHead) {
+                this.tail.prev = null;
+            }
+            this.head.prev = null;
+            removedHead.next = null;
         }
 
-        return this.stack.pop();
+        return removedHead.item;
     }
 
-    // delete and return the item at the end
     public Item removeLast() {
-        return this.queue.dequeue();
+        Node removedTail = this.tail;
+
+        if (this.tail.prev == null) {
+            this.head = null;
+            this.tail = null;
+        }
+        else {
+            this.tail = this.tail.prev;
+
+            if (this.head.next == removedTail) {
+                this.head.next = null;
+            }
+            this.tail.next = null;
+            removedTail.prev = null;
+        }
+
+        return removedTail.item;
     }
 
-    // return an iterator over items in order from front to end
     public Iterator<Item> iterator() {
-        return new DequeIterator(this.stack, this.queue);
+        return new DequeIterator(this.head);
     }
 
-    // unit testing
     public static void main(String[] args) {
 
     }
 
     private class DequeIterator implements Iterator<Item> {
-        private Queue<Item> items;
+        private Node currentNode;
 
-        public DequeIterator(Stack<Item> stack, Queue<Item> queue) {
-            this.items = new Queue<Item>();
-            Iterator<Item> stackIterator = stack.iterator();
-            Iterator<Item> queueIterator = queue.iterator();
-            Item currentItem = null;
-
-            while (stackIterator.hasNext()) {
-                currentItem = stackIterator.next();
-                // if (queueIterator.hasNext() && queueIterator.next() == stackItem) break;
-                items.enqueue(currentItem);
-            }
-
-            while (queueIterator.hasNext()) {
-                currentItem = queueIterator.next();
-                // if (stackIterator.hasNext() && stackIterator.next() == currentItem) break;
-                items.enqueue(currentItem);
-            }
+        public DequeIterator(Node head) {
+            this.currentNode = head;
         }
 
         @Override
         public boolean hasNext() {
-            return items.size() != 0;
+            return currentNode != null;
         }
 
         @Override
         public Item next() {
-            return items.dequeue();
+            Node next = this.currentNode;
+            this.currentNode = currentNode.next;
+            return next.item;
         }
 
         @Override
