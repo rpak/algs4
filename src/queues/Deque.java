@@ -28,6 +28,7 @@ public class Deque<Item> implements Iterable<Item> {
     }
 
     public void addFirst(Item item) {
+        if (item == null) { throw new NullPointerException(); };
         Node node = new Node();
         node.item = item;
 
@@ -35,30 +36,27 @@ public class Deque<Item> implements Iterable<Item> {
             node.next = this.head;
             this.head.prev = node;
         }
-        if (this.tail == null) {
-            this.tail = node;
-        }
+        if (this.tail == null) { this.tail = node; }
 
         this.length++;
         this.head = node;
     }
 
     public void addLast(Item item) {
+        if (item == null) { throw new NullPointerException(); };
         Node node = new Node();
         node.item = item;
         if (this.tail != null) {
             node.prev = this.tail;
             this.tail.next = node;
         }
-        if (this.head == null) {
-            this.head = node;
-        }
+        if (this.head == null) { this.head = node; }
         this.length++;
         this.tail = node;
     }
 
-    // delete and return the item at the front
     public Item removeFirst() {
+        if (this.isEmpty()) { throw new NoSuchElementException(); }
         Node removedHead = this.head;
 
         if (this.head.next == null) {
@@ -67,18 +65,17 @@ public class Deque<Item> implements Iterable<Item> {
         }
         else {
             this.head = this.head.next;
-
-            if (this.tail.prev == removedHead) {
-                this.tail.prev = null;
-            }
+            if (this.tail.prev == removedHead) { this.tail.prev = null; }
             this.head.prev = null;
             removedHead.next = null;
         }
 
+        this.length--;
         return removedHead.item;
     }
 
     public Item removeLast() {
+        if (this.isEmpty()) { throw new NoSuchElementException(); }
         Node removedTail = this.tail;
 
         if (this.tail.prev == null) {
@@ -87,14 +84,12 @@ public class Deque<Item> implements Iterable<Item> {
         }
         else {
             this.tail = this.tail.prev;
-
-            if (this.head.next == removedTail) {
-                this.head.next = null;
-            }
+            if (this.head.next == removedTail) { this.head.next = null; }
             this.tail.next = null;
             removedTail.prev = null;
         }
 
+        this.length--;
         return removedTail.item;
     }
 
@@ -120,12 +115,15 @@ public class Deque<Item> implements Iterable<Item> {
 
         @Override
         public Item next() {
+            if (!hasNext()) { throw new NoSuchElementException(); }
             Node next = this.currentNode;
             this.currentNode = currentNode.next;
             return next.item;
         }
 
         @Override
-        public void remove() {}
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
     };
 }

@@ -3,10 +3,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class DequeTest {
     private Deque<String> subject;
@@ -43,7 +45,7 @@ public class DequeTest {
         assertEquals("D", iterator.next());
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testAddFirst() {
         subject.addFirst("foo");
         subject.addFirst("bar");
@@ -52,9 +54,10 @@ public class DequeTest {
         assertEquals("baz", iterator.next());
         assertEquals("bar", iterator.next());
         assertEquals("foo", iterator.next());
+        subject.addLast(null);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testAddLast() {
         subject.addLast("foo");
         subject.addLast("bar");
@@ -63,9 +66,10 @@ public class DequeTest {
         assertEquals("foo", iterator.next());
         assertEquals("bar", iterator.next());
         assertEquals("baz", iterator.next());
+        subject.addLast(null);
     }
 
-    @Test
+    @Test(expected = NoSuchElementException.class)
     public void testRemoveFirst() {
         subject.addFirst("A");
         assertEquals("A", subject.removeFirst());
@@ -75,9 +79,10 @@ public class DequeTest {
         assertEquals("C", subject.removeFirst());
         assertEquals("B", subject.removeFirst());
         assertEquals("D", subject.removeFirst());
+        subject.removeFirst();
     }
 
-    @Test
+    @Test(expected = NoSuchElementException.class)
     public void testRemoveLast() {
         subject.addLast("A");
         subject.addLast("B");
@@ -89,9 +94,10 @@ public class DequeTest {
         assertEquals("A", subject.removeLast());
         assertEquals("D", subject.removeLast());
         assertEquals("E", subject.removeLast());
+        subject.removeFirst();
     }
 
-    @Test
+    @Test(expected = NoSuchElementException.class)
     public void testIterator() {
         subject.addFirst("foo");
         subject.addFirst("bar");
@@ -103,8 +109,17 @@ public class DequeTest {
             assertTrue(next.equals("foo") || next.equals("bar"));
             iterationCount++;
         }
+        iterator.next();
+        try { iterator.remove(); fail("Expected UnsupportedOperationException"); } catch (UnsupportedOperationException e) {};
         assertEquals(iterationCount, subject.size());
     }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testIteratorRemove() {
+        Iterator<String> iterator = subject.iterator();
+        iterator.remove();
+    }
+
 
     @Test
     public void testMain() {}
