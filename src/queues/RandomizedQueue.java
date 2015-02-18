@@ -4,68 +4,59 @@ import java.util.NoSuchElementException;
 public class RandomizedQueue<Item> implements Iterable<Item> {
     private Item[] items;
     private int length;
-    private int nextIndex;
 
-    // construct an empty randomized queue
     public RandomizedQueue() {
         this.items = (Item[]) new Object[2];
         this.length = 0;
-        this.nextIndex = 0;
     }
 
-    // is the queue empty?
     public boolean isEmpty() {
         return size() == 0;
     }
 
-    // return the number of items on the queue
     public int size() {
         return this.length;
     }
 
-    // add the item
     public void enqueue(Item item) {
-        // if (size() == items.length) resize(2 * items.length);
-        this.items[nextIndex] = item;
-        this.nextIndex++;
+        if (size() == items.length) resize(2 * items.length);
+        this.items[this.length] = item;
         this.length++;
     }
 
     // delete and return a random item
     public Item dequeue() {
         if (isEmpty()) throw new NoSuchElementException();
-
         if (size() > 0 && size() == items.length / 4) resize(items.length / 2);
+
+        int index = sampleIndex();
+        Item randomItem = this.items[index];
+        Item lastItem = this.items[size() - 1];
+        this.items[index] = lastItem;
+        this.items[size() - 1] = null;
         this.length--;
 
-        int index = StdRandom.uniform(this.length);
-        Item randomItem = sample();
-        if (this.items[index] == null) {
-
-        }
-        return null;
+        return randomItem;
     }
 
     private void resize(int size) {
+        assert size >= size();
+        Item[] temp = (Item[]) new Object[size];
 
+        for (int i = 0; i < size(); i++) {
+            temp[i] = this.items[i];
+        }
+        this.items = temp;
     }
 
     // return (but do not delete) a random item
     public Item sample() {
         if (isEmpty()) throw new NoSuchElementException();
-        return null;
+        return this.items[sampleIndex()];
     }
 
     private int sampleIndex() {
-        int randomIndex = -1;
-        while (randomIndex <= -1) {
-            int candidate = StdRandom.uniform(this.items.length);
-            if (this.items[candidate] != null) {
-                randomIndex = candidate;
-            }
-        }
-
-        return randomIndex;
+        return StdRandom.uniform(this.length);
     }
 
     // return an independent iterator over items in random order
@@ -86,11 +77,8 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             this.iterationIndex = 0;
             this.iteratee = (Item[]) new Object[size()];
 
-            int currentIndex = 0;
-            for (Item item : items) {
-                if (item == null) continue;
-                this.iteratee[currentIndex] = item;
-                currentIndex++;
+            for (int i = 0; i < size(); i++) {
+                this.iteratee[i] = items[i];
             }
             StdRandom.shuffle(this.iteratee);
         }
