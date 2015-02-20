@@ -1,7 +1,9 @@
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
-
 public class BruteTest {
 
+    @Test
+    public void test() {
+        Brute.main(new String[] {"test/collinear/input6.txt"});
+    }
 }
