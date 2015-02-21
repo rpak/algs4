@@ -18,9 +18,6 @@ public class Brute {
             points[actual] = new Point(x, y);
             actual++;
         }
-
-//        System.out.println("Brute forcing " + n + " points...");
-//        System.out.println("Finished reading " + actual + " points...");
         reader.close();
 
         return points;
@@ -28,7 +25,6 @@ public class Brute {
 
     private static void findCollinearLines(Point[] points) {
         Arrays.sort(points);
-        int cost = 0;
 
         for (int i = 0; i < points.length; i++) {
             points[i].draw();
@@ -39,11 +35,8 @@ public class Brute {
                         double s2 = points[j].slopeTo(points[k]);
                         double s3 = points[k].slopeTo(points[l]);
 
-                        cost++;
                         if (s1 == s2 && s2 == s3) {
-                            points[i].drawTo(points[j]);
-                            points[j].drawTo(points[k]);
-                            points[k].drawTo(points[l]);
+                            points[i].drawTo(points[l]);
                             System.out.println(points[i] + " -> " +
                                                points[j] + " -> " +
                                                points[k] + " -> " + points[l]);
@@ -52,8 +45,6 @@ public class Brute {
                 }
             }
         }
-
-        // System.out.println("Finished finding collinear lines at a cost of " + cost);
     }
 
     public static void main(String[] args) {
@@ -63,9 +54,8 @@ public class Brute {
         try {
             Point[] points = buildPointsFromFile(args[0]);
             findCollinearLines(points);
-
-            // while (true) { Thread.sleep(1000); }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace(System.err);
             throw new RuntimeException(e.getMessage());
         }
