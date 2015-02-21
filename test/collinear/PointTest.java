@@ -63,6 +63,24 @@ public class PointTest {
         assertEquals(Double.NEGATIVE_INFINITY, p1.slopeTo(px), 0.01);
     }
 
+    @Test
+    public void testPositiveInfinity() {
+        Point p1 = new Point(24105, 24244);
+        Point p2 = new Point(24105, 19115);
+        assertEquals(Double.POSITIVE_INFINITY, p1.slopeTo(p2), 0.01);
+    }
+
+    @Test
+    public void testPositiveZero() {
+        Point p1 = new Point(462, 113);
+        Point p2 = new Point(188, 113);
+        assertEquals(Double.doubleToRawLongBits(+0.0), Double.doubleToRawLongBits(p1.slopeTo(p2)), 0.01);
+        Point p3 = new Point(25316, 4212);
+        Point p4 = new Point(5364, 4212);
+        System.out.println(p3.slopeTo(p4));
+        assertEquals(Double.doubleToRawLongBits(+0.0), Double.doubleToRawLongBits(p3.slopeTo(p4)), 0.01);
+    }
+
     /**
      * 4 |  |p3|  |  |p2|
      * 3 |  |  |  |  |  |
